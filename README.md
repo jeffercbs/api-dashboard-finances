@@ -3,7 +3,6 @@
 -  Nestjs
 -  TypeORM
 -  PostgreSQL
--  GraphQL
 
 ## 📄**Documentation**
 

@@ -14,7 +14,7 @@ export class RegistersService {
    ) {}
 
    async create(register: CreateRegisterInput) {
-      const userFound = this.usersService.findOne(register.user_id);
+      const userFound = this.usersService.findUser(register.user_id);
 
       if (!userFound) {
          return new HttpException('User not found', 404);

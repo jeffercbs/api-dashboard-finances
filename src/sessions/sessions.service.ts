@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSessionInput } from './dto/create-session.input';
-import { UpdateSessionInput } from './dto/update-session.input';
 import { Session } from './entities/session.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,12 +12,18 @@ export class SessionsService {
       private sessionsRepository: Repository<Session>,
       private userService: UsersService,
    ) {}
-   create(session: CreateSessionInput) {
+   createSession(session: CreateSessionInput) {
       return this.sessionsRepository.save(session);
    }
 
-   async findAll(id: string) {
-      const user = await this.userService.findOne(id);
+   findAll(id: string) {
+      return this.sessionsRepository.find({
+         where: { user_id: id },
+      });
+   }
+
+   async findOne(email: string) {
+      const user = await this.userService.findUser(email);
 
       if (user) {
          throw new NotFoundException('User not found');
@@ -33,11 +38,7 @@ export class SessionsService {
       });
    }
 
-   findOne(id: string) {
-      return `This action returns a #${id} session`;
-   }
-
-   update(id: string, updateSessionInput: UpdateSessionInput) {
+   update(id: string) {
       return `This action updates a #${id} session`;
    }
 

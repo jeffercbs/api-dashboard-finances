@@ -9,12 +9,16 @@ import {
    ParseUUIDPipe,
    Patch,
    Post,
+   Query,
+   UseGuards,
 } from '@nestjs/common';
 import { CreateRegisterInput } from './dto/create-register-dto';
 import { Register } from './entities/register.entity';
 import { RegistersService } from './registers.service';
+import { JwtAuthGuard } from 'src/auth/auth.guard';
 
 @Controller('registers')
+@UseGuards(JwtAuthGuard)
 export class RegistersController {
    constructor(private registerService: RegistersService) {}
    @Get()
@@ -22,17 +26,18 @@ export class RegistersController {
       return this.registerService.findAll();
    }
 
-   @Get(':month/:year')
+   @Get()
    async getRegistersByMonthYear(
-      @Param('month', ParseIntPipe) month: number,
-      @Param('year', ParseIntPipe) year: number,
+      @Query('month', ParseIntPipe) month: number,
+      @Query('year', ParseIntPipe) year: number,
    ): Promise<Register[]> {
       const registers = await this.registerService.findAllByMonthYear(
          month,
          year,
       );
-      if (!registers || registers.length === 0)
+      if (!registers || registers.length === 0) {
          throw new NotFoundException('Registers not found');
+      }
       return registers;
    }
 

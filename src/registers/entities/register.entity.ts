@@ -1,5 +1,6 @@
+import { Board } from 'src/boards/entities/board.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('registers')
 export class Register {
@@ -9,8 +10,11 @@ export class Register {
    @Column()
    user_id: string;
 
-   @ManyToMany(() => User, (user) => user.registers)
+   @OneToOne(() => User, (user) => user.registers)
    user: User;
+
+   @OneToOne(() => Board, (board) => board.registers, { nullable: true })
+   board: Board;
 
    @Column()
    title: string;

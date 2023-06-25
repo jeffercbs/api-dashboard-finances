@@ -6,7 +6,8 @@ import { Session } from 'src/sessions/entities/session.entity';
 import {
    Column,
    Entity,
-   OneToMany,
+   JoinColumn,
+   OneToOne,
    PrimaryGeneratedColumn,
    Unique,
 } from 'typeorm';
@@ -28,13 +29,16 @@ export class User {
    @Exclude()
    password: string;
 
-   @OneToMany(() => Register, (register) => register.user)
+   @OneToOne(() => Register)
+   @JoinColumn({ name: 'registers_id' })
    registers: Register[];
 
-   @OneToMany(() => Board, (board) => board.user)
+   @OneToOne(() => Board)
+   @JoinColumn({ name: 'boards_id' })
    boards: Board[];
 
-   @OneToMany(() => Session, (session) => session.user)
+   @OneToOne(() => Session)
+   @JoinColumn({ name: 'sessions_id' })
    sessions: Session[];
 
    @Column({ type: 'date', default: () => 'CURRENT_TIMESTAMP' })

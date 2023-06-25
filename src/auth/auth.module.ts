@@ -12,7 +12,7 @@ import { SessionsModule } from 'src/sessions/sessions.module';
       SessionsModule,
       JwtModule.register({
          global: true,
-         secret: 'secret',
+         secret: 'dmldmskdskdsmkdsmdksmfkfs',
          signOptions: { expiresIn: '24h' },
       }),
    ],

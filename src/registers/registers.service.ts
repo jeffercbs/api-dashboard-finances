@@ -25,7 +25,11 @@ export class RegistersService {
    }
 
    findAll() {
-      return this.registersRepository.find();
+      return this.registersRepository.find({
+         relations: {
+            user: true,
+         },
+      });
    }
 
    findOne(id: string) {

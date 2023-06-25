@@ -1,26 +1,55 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
+import { Board } from './entities/board.entity';
+import { UsersService } from 'src/users/users.service';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class BoardsService {
-   create(createBoardDto: CreateBoardDto) {
-      return 'This action adds a new board';
-   }
+   constructor(
+      @InjectRepository(Board)
+      private BoardsRepository: Repository<Board>,
+      private usersService: UsersService,
+   ) {}
 
-   findAll() {
-      return `This action returns all boards`;
+   async create(board: CreateBoardDto) {
+      const userFound = this.usersService.findUser(board.user_id);
+
+      if (!userFound) {
+         return new HttpException('User not found', 404);
+      }
+
+      const newboard = this.BoardsRepository.create(board);
+      return this.BoardsRepository.save(newboard);
    }
 
    findOne(id: string) {
-      return `This action returns a #${id} board`;
+      return this.BoardsRepository.findOne({
+         where: {
+            id,
+         },
+         relations: {
+            registers: true,
+            user: true,
+         },
+      });
    }
 
-   update(id: string, updateBoardDto: UpdateBoardDto) {
-      return `This action updates a #${id} board`;
+   async delete(id: string) {
+      const board = await this.BoardsRepository.findOne({
+         where: { id },
+      });
+
+      if (!board) {
+         return new HttpException('Board not found', 404);
+      }
+
+      return await this.BoardsRepository.delete(id);
    }
 
-   remove(id: string) {
-      return `This action removes a #${id} board`;
+   update(id: string, board: UpdateBoardDto) {
+      return this.BoardsRepository.update(id, board);
    }
 }

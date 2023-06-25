@@ -19,5 +19,8 @@ export class CreateRegisterInput {
    @IsString()
    type: string;
 
+   @IsNotEmpty()
    amount: number;
+
+   board_id?: string;
 }

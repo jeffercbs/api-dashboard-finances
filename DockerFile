@@ -1,0 +1,15 @@
+FROM node:lts-alpine as install
+LABEL stage="install"
+WORKDIR /src/install
+COPY package.json .
+COPY pnpm-lock.yaml .
+RUN pnpm install
+
+
+FROM node:lts-alpine as build
+LABEL stage="build"
+WORKDIR /src/build
+COPY --from=install /src/install .
+COPY . .
+RUN pnpm run build
+
